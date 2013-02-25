@@ -74,7 +74,10 @@ get '/note/:id' do
     return [404, {'Content-Type' => 'application/json'}, ['']]
   end
 
-  return [200, {'Content-Type' => 'application/json'}, [jsonp?(note.to_json)]]
+  return [200, {'Content-Type' => 'application/json'},
+          [jsonp?(note.to_json)]]
+  # [wc 2013-02-25] HTTP GET note. Returns HTTP 200 with JSON object
+  # of note, if it exists.
 end
 
 # Add a note to the server, subject and content
@@ -109,6 +112,10 @@ put '/note' do
   else
     return [406, {'Content-Type' => 'application/json'}, ['']]
   end
+  # [wc 2013-02-25] HTTP PUT note. Runs the JSON parser on request
+  # body, and if the parser generates a JSON object with 'subject' and
+  # 'content' attributes, create a note, update the database, and
+  # return a 201 HTTP response. Otherwise return HTTP 406 response.
 end
 
 # Update the content of a note, replace subject
@@ -143,6 +150,7 @@ post '/note/:id' do
   else
     return [406, {'Content-Type' => 'application/json'}, ['']]
   end
+  # [wc 2013-02-25] HTTP POST note.
 end
 
 # Remove a note entirely
@@ -158,5 +166,6 @@ delete '/note/:id' do
   else
     return [500, {'Content-Type' => 'application/json'}, ['']]
   end
+  # [wc 2013-02-25] HTTP DELETE note.
 end
 

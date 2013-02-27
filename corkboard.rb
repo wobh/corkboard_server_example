@@ -169,3 +169,12 @@ delete '/note/:id' do
   # [wc 2013-02-25] HTTP DELETE note.
 end
 
+get '/favicon.ico' do
+  content_type :ico
+  File.open('public/Images/favicon.ico')
+end
+
+# get '/' do
+#   content_type :html
+#   File.
+# end

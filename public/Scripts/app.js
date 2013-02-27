@@ -73,7 +73,7 @@ Note.prototype.save = function () {
     $.ajax({
 	url: this.url(),
 	dataType: "json",
-	data: this.JSON(),
+	data: this.toJSON(),
 	success: function (data) {
 	    console.log(data);
 	},

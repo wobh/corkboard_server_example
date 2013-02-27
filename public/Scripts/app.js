@@ -59,10 +59,6 @@ Note.prototype.fetch = function () {
     });
 };
 
-var my_note = new Note(undefined, undefined, 1);
-
-my_note.fetch();
-
 Note.prototype.save = function () {
     var http_method;
     if (isInteger(this.id)) {
@@ -94,9 +90,27 @@ Note.prototype.destroy = function () {
     });
 }; // FIXME: I don't know if this works!
 
+
+// Note object Tests.
+// Comment out when not in use
+
+var my_note = new Note(undefined, undefined, 1);
+
+my_note.fetch();
+
+
 var n = new Note("Marvin", "Depressed Android.", 10);
 
 n.save();
 
 // var mediator = {};
 // mediator.addEventListener('Note: fetched', refresh); // ?
+
+function Notes() {}
+    
+
+function refresh() {}
+    
+// $("#notes-table").prototype.refresh = function ()
+    
+// $("#notes-table").addEventListener("Note: fetched", refresh);

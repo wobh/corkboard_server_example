@@ -169,6 +169,26 @@ delete '/note/:id' do
   # [wc 2013-02-25] HTTP DELETE note.
 end
 
+# [wc 2013-03-01] Get all notes data. FIXME: This is unwise.
+
+get '/notes/all' do
+  notes = Note.all.to_a
+
+  if notes.nil?
+    return [404, {'Content-Type' => 'application/json'}, ['']]
+  end
+
+  return [200, {'Content-Type' => 'application/json'}, [jsonp?(notes.to_json)]]
+end
+
+
+# [wc 2013-03-01] TODO Get some notes data.
+
+get 'notes/some' do
+  
+end
+
+
 get '/favicon.ico' do
   content_type :ico
   File.open('public/Images/favicon.ico')

@@ -16,11 +16,11 @@ function valueOrUndefinedOrError (value, check) {
     }
 };
 
-function Note (subject, content, id) {
+function Note (id, subject, content) {
     this.base_url = "/note";
+    this.id      = valueOrUndefinedOrError(id, isInteger);
     this.subject = valueOrUndefinedOrError(subject, isString);
     this.content = valueOrUndefinedOrError(content, isString);
-    this.id      = valueOrUndefinedOrError(id, isInteger);
 };
 
 Note.prototype.url = function() {
@@ -32,11 +32,17 @@ Note.prototype.url = function() {
 };
 
 Note.prototype.toJSON = function() {
-    var this_note = {"subject": this.subject, "content": this.content};
+    var this_note = {};
     if (isInteger(this.id)) {
 	this_note.id = this.id;
     }
+    this_note.subject = this.subject; 
+    this_note.content = this.content;
     return JSON.stringify(this_note);
+};
+
+Note.prototype.toHTMLTableRow = function() {
+    return "<tr><td>" + this.id + "</td><td>" + this.subject + "</td><td>" + this.content + "</td></tr>";
 };
 
 Note.prototype.toKeyValStr = function() {
@@ -55,6 +61,7 @@ Note.prototype.fetch = function () {
 	    this.subject = data.subject;
 	    this.content = data.content;
 	    console.log(this); },
+	type: "GET",
 	context: this
     });
 };
@@ -88,28 +95,105 @@ Note.prototype.destroy = function () {
 	type: "DELETE",
 	context: this
     });
-}; // FIXME: I don't know if this works!
+}; 
 
 
 // Note object Tests.
 // Comment out when not in use
 
-var my_note = new Note(undefined, undefined, 1);
+//var my_note = new Note(undefined, undefined, 1);
 
-my_note.fetch();
+//my_note.fetch();
 
+//var n = new Note("Marvin", "Depressed Android.", 10);
 
-var n = new Note("Marvin", "Depressed Android.", 10);
-
-n.save();
+//n.save();
 
 // var mediator = {};
 // mediator.addEventListener('Note: fetched', refresh); // ?
 
-function Notes() {}
-    
+function Notes() {
+    this.base_url = "/notes";
+//    this.column_names = ["id", "subject", "content"];
+    this.data = [];
+};
 
-function refresh() {}
+Notes.prototype.fetchall = function() {
+    return $.ajax({ 
+	url: this.base_url + "/all",
+	datatype: "json",
+	success: function(data) {
+	    this.data = [];
+	    _this = this; // for reference in $.each
+	    $.each(data, function (index, value) {
+		n = new Note(value["id"], value["subject"], value["content"]);
+		_this.data.push(n); 
+	    });
+	},
+	type: "GET",
+	context: this
+    });
+};
+
+Notes.prototype.fetchsome = function() {};
+
+Notes.prototype.toHTMLTableHead = function() {
+    return "<tr><th>ID</th><th>Subject</th><th>Content</th></tr>";
+};
+
+Notes.prototype.toHTMLTable = function() {
+    var str = "<table>\n";
+    str += this.toHTMLTableHead() + "\n";
+    _this = this; // for reference in $.each
+    $.each(this.data, function (index, note) {
+	str += note.toHTMLTableRow() + "\n";
+	});
+    str += "</table>\n";
+    return str;
+};
+
+
+function Report (id) {
+    this.id = id;
+};
+
+Report.prototype.reset = function () {
+    $(this.id).html("");
+};
+
+Report.prototype.write = function (stuff) {
+    $(this.id).html(stuff);
+};
+
+ns = new Notes();
+ns.fetchall().done(function () {
+    r = new Report("#notes-table");
+    r.write(ns.toHTMLTable());
+});
+
+/*
+Notes.prototype.updateidselection = function () {
+    $.ajax({
+	url: this.base_url,
+	datatype: "json",
+	type: "GET",
+	success: function(data) {
+	    var n;
+	    $("#txt-noteid").html("");
+	    $(data).each(function (index) {
+		n = new Note(data[index]["id"], data[index]["subject"], data[index]["content"]);
+		$("#txt-noteid").append(n.toKeyValStr());
+	    });
+	}
+    });
+};
+*/
+
+
+Function Input (id) {
+};
+
+//function refresh() {}
     
 // $("#notes-table").prototype.refresh = function ()
     

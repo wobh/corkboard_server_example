@@ -190,11 +190,12 @@ Notes.prototype.updateidselection = function () {
 */
 
 
-Function Input (id) {
+function Input (id) {
+    this.id = id;
 };
 
-//function refresh() {}
-    
+//function refresh() {};
+
 // $("#notes-table").prototype.refresh = function ()
     
 // $("#notes-table").addEventListener("Note: fetched", refresh);
